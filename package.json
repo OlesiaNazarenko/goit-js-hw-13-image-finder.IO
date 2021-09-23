@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@pnotify/core": "^5.2.0",
+    "basiclightbox": "^5.0.4",
     "json-server": "^0.16.3",
     "lodash.debounce": "^4.0.8"
   }

@@ -5,5 +5,6 @@ const refs = {
     gallery: document.querySelector('.gallery'),
     searchBtn: document.querySelector('.searchBtn'),
     loadMoreBtn: document.querySelector('.loadBtn'),
+    modal: document.querySelector('.modal'),
 }
 export default refs;
