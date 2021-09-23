@@ -74,4 +74,3 @@ gallery.addEventListener('click', ((e) => {
 
   }
 }))
-document.addEventListener('keydown', (() => close())); 
