@@ -12,7 +12,9 @@ img:hover {
   width: 350px;
   justify-content: space-around;
 }
-
+.observe {
+  border-color: red;
+}
 .button-21 {
   align-items: center;
   appearance: none;
@@ -68,10 +70,11 @@ img:hover {
 .loadBtn {
   width: 170px;
   margin: 50px auto;
-  display: none;
+  display: block;
+  opacity: 0;
 }
 .is-hidden {
-  display: block;
+  opacity: 1;
 }
 .gallery {
   width: 900px;
@@ -91,6 +94,7 @@ img:hover {
   height: 160px;
 }
 .stats {
+  width: 240px;
   display: flex;
   justify-content: space-between;
   padding: 0 10px;

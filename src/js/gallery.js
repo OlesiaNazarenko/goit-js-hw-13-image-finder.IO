@@ -24,11 +24,13 @@ function renderGalleryCard(array) {
 }
 function clearContainer() {
   gallery.innerHTML = '';
+   loadMoreBtn.classList.remove('is-hidden');
 }
 function onSearch() {
     const searchQuery = input.value;
     onsearchImage(searchQuery, page, perPage)
    }
+
  function resetPage() {
         page = 1;
 }
@@ -45,34 +47,30 @@ function onsearchImage(query, page, perPage) {
       } else {
         renderGalleryCard(array);
         loadMoreBtn.classList.add('is-hidden');
-        loadMoreBtn.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-        })
       }
-      }).catch((err) => {
-        error({ text: 'Something went wrong.Please try again' })
-      })
-  }
-   }
+    }).catch((err) => {
+      error({ text: 'Something went wrong.Please try again' })
 
-form.addEventListener('submit', ((e) => { e.preventDefault();resetPage(); clearContainer(); onSearch() }));
+  
+    }
+    )
+  }
+}
+
+
+form.addEventListener('submit', ((e) => { e.preventDefault(); resetPage(); clearContainer(); onSearch() }));
 loadMoreBtn.addEventListener('click', ((e) => {
   e.preventDefault();
   page = page + 1;
   onSearch();
 }));
 
-gallery.addEventListener('click', ((e) => {
-  console.log(e.target.src)
-  if (e.target.className === 'photo') {
-    basicLightbox.create(`
+
+  gallery.addEventListener('click', ((e) => {
+    if (e.target.className === 'photo') {
+      basicLightbox.create(`
     <div class="modal">
         <img src="${e.target.src}" alt="" class="modal-photo" />
-      </div>`
-      
-    ).show()
-
-  }
-}))
-
+      </div>`).show()
+    }
+  }))
