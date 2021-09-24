@@ -30,9 +30,12 @@ function onSearch() {
     const searchQuery = input.value;
     onsearchImage(searchQuery, page, perPage)
    }
+    function resetPage() {
+        page = 1;
+}
 function onsearchImage(query, page, perPage) {
-  observer.unobserve(loadMoreBtn);
-  loadMoreBtn.classList.remove('is-hidden');
+  // observer.unobserve(loadMoreBtn);
+ 
   if (query.length === 0 || query.length < 2) {
     error({ text: 'Enter a search word and try again' })
     return;
@@ -45,11 +48,10 @@ function onsearchImage(query, page, perPage) {
         
       }
       if ( page >1 || array.length === 0) {
-        // loadMoreBtn.classList.remove('is-hidden');
-        renderGalleryCard(array);
+        observer.unobserve(loadMoreBtn);
         console.log('2')
         console.log(page)
-        // alert({ text: 'There are no more images for your request' })
+        alert({ text: 'There are no more images for your request' })
         return 
         }
       else {
@@ -78,7 +80,7 @@ function infiniteScroll(entries, observer) {
     return alert({ text: 'There are no more images for your request' })}
 }
 
-form.addEventListener('submit', ((e) => { e.preventDefault(); clearContainer(); onSearch() }));
+form.addEventListener('submit', ((e) => { e.preventDefault(); resetPage(); clearContainer(); onSearch() }));
 // loadMoreBtn.addEventListener('click', ((e) => {
 //   e.preventDefault();
 //   page = page + 1;
