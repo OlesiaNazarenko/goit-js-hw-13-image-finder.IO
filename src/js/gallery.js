@@ -30,7 +30,7 @@ function onSearch() {
     const searchQuery = input.value;
     onsearchImage(searchQuery, page, perPage)
    }
-<<<<<<< HEAD
+
 function resetPage() {
         page = 1;
 }
@@ -38,22 +38,13 @@ function incrementPage() {
         page = page+1;
 }
 function onsearchImage(query, page, perPage) {
- 
-=======
-
- function resetPage() {
-        page = 1;
-}
     
 function onsearchImage(query, page, perPage) {
   loadMoreBtn.classList.remove('is-hidden');
->>>>>>> b6c0f99477e5df21b9afb41896c087abe8d00252
   if (query.length === 0 || query.length < 2) {
     alert({ text: 'Enter a search word and try again' })
   } else {
     fetchImage(query, page, perPage).then(array => {
-<<<<<<< HEAD
-      
       if (array.length == 0) {
         loadMoreBtn.classList.remove('is-hidden');
         info({ text: 'There are no more images. Please, try another request ' })
@@ -78,42 +69,22 @@ const options = {
    }
 const observer = new IntersectionObserver(infiniteScroll,options )
 
-function infiniteScroll(entries, observer) {
-  if (!entries.isIntersecting) {
-    incrementPage()
-    onSearch()
-  } else {
-     observer.unobserve(loadMoreBtn);   
-    return alert({ text: 'There are no more images for your request' })}
-=======
-      if (array.length == 0) {
-        info({ text: 'There are no more images. Please, try another request ' })
-        return;
-      } else {
-        renderGalleryCard(array);
-        loadMoreBtn.classList.add('is-hidden');
-      }
-    }).catch((err) => {
-      error({ text: 'Something went wrong.Please try again' })
-
-  
+  function infiniteScroll(entries, observer) {
+    if (!entries.isIntersecting) {
+      incrementPage()
+      onSearch()
+    } else {
+      observer.unobserve(loadMoreBtn);
+      return alert({ text: 'There are no more images for your request' })
     }
-    )
+
   }
->>>>>>> b6c0f99477e5df21b9afb41896c087abe8d00252
-}
+  }
+
+
 
 
 form.addEventListener('submit', ((e) => { e.preventDefault(); resetPage(); clearContainer(); onSearch() }));
-<<<<<<< HEAD
-=======
-loadMoreBtn.addEventListener('click', ((e) => {
-  e.preventDefault();
-  page = page + 1;
-  onSearch();
-}));
->>>>>>> b6c0f99477e5df21b9afb41896c087abe8d00252
-
 
   gallery.addEventListener('click', ((e) => {
     if (e.target.className === 'photo') {
