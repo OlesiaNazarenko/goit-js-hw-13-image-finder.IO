@@ -4,7 +4,7 @@ import galleryCards from '../templates/galleryCards.hbs'
 import * as basicLightbox from 'basiclightbox'
 
 
-import { alert, error } from '@pnotify/core/dist/PNotify.js'
+import { alert, error, info } from '@pnotify/core/dist/PNotify.js'
 import '@pnotify/core/dist/PNotify.css'
 import '@pnotify/core/dist/BrightTheme.css'
 import { defaults } from '@pnotify/core'
@@ -29,16 +29,19 @@ function onSearch() {
     const searchQuery = input.value;
     onsearchImage(searchQuery, page, perPage)
    }
+ function resetPage() {
+        page = 1;
+}
+    
 function onsearchImage(query, page, perPage) {
-  if (query.length === 0 || query.length <= 2) {
-    loadMoreBtn.classList.remove('is-hidden');
-    error({ text: 'Enter a search word and try again' })
-    return;
+  loadMoreBtn.classList.remove('is-hidden');
+  if (query.length === 0 || query.length < 2) {
+    alert({ text: 'Enter a search word and try again' })
   } else {
     fetchImage(query, page, perPage).then(array => {
-      if (array.length === 0) {
-        error({ text: 'Enter a search word and try again' })
-    return;
+      if (array.length == 0) {
+        info({ text: 'There are no more images. Please, try another request ' })
+        return;
       } else {
         renderGalleryCard(array);
         loadMoreBtn.classList.add('is-hidden');
@@ -47,15 +50,13 @@ function onsearchImage(query, page, perPage) {
           block: 'end',
         })
       }
-      }).catch((error) => {
-        alert({ text: 'Something went wrong.Please try again' })
+      }).catch((err) => {
+        error({ text: 'Something went wrong.Please try again' })
       })
   }
    }
 
-
-
-form.addEventListener('submit', ((e) => { e.preventDefault(); clearContainer(); onSearch() }));
+form.addEventListener('submit', ((e) => { e.preventDefault();resetPage(); clearContainer(); onSearch() }));
 loadMoreBtn.addEventListener('click', ((e) => {
   e.preventDefault();
   page = page + 1;
@@ -74,4 +75,4 @@ gallery.addEventListener('click', ((e) => {
 
   }
 }))
-document.addEventListener('keydown', (() => close())); 
+
