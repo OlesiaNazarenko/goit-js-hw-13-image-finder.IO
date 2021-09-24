@@ -24,46 +24,68 @@ function renderGalleryCard(array) {
 }
 function clearContainer() {
   gallery.innerHTML = '';
+   loadMoreBtn.classList.remove('is-hidden');
 }
 function onSearch() {
     const searchQuery = input.value;
     onsearchImage(searchQuery, page, perPage)
    }
 function onsearchImage(query, page, perPage) {
-  if (query.length === 0 || query.length <= 2) {
-    loadMoreBtn.classList.remove('is-hidden');
+  observer.unobserve(loadMoreBtn);
+  loadMoreBtn.classList.remove('is-hidden');
+  if (query.length === 0 || query.length < 2) {
     error({ text: 'Enter a search word and try again' })
     return;
   } else {
     fetchImage(query, page, perPage).then(array => {
-      if (array.length === 0) {
-        error({ text: 'Enter a search word and try again' })
-    return;
-      } else {
+      if (page === 1 && array.length === 0) {
+        alert({ text: 'There are no images for your request' })
+       
+        console.log('1');
+        
+      }
+      if ( page >1 || array.length === 0) {
+        // loadMoreBtn.classList.remove('is-hidden');
+        renderGalleryCard(array);
+        console.log('2')
+        console.log(page)
+        // alert({ text: 'There are no more images for your request' })
+        return 
+        }
+      else {
         renderGalleryCard(array);
         loadMoreBtn.classList.add('is-hidden');
-        loadMoreBtn.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-        })
+        observer.observe(loadMoreBtn)        
       }
       }).catch((error) => {
         alert({ text: 'Something went wrong.Please try again' })
+        
       })
   }
    }
 
+const options = {
+      root: null,
+      rootMargin: '0px'
+   }
+const observer = new IntersectionObserver(infiniteScroll,options )
 
+function infiniteScroll(entries, observer) {
+  if (!entries.isIntersecting) {
+    page = page + 1;
+    onSearch()
+  } else {
+    return alert({ text: 'There are no more images for your request' })}
+}
 
 form.addEventListener('submit', ((e) => { e.preventDefault(); clearContainer(); onSearch() }));
-loadMoreBtn.addEventListener('click', ((e) => {
-  e.preventDefault();
-  page = page + 1;
-  onSearch();
-}));
+// loadMoreBtn.addEventListener('click', ((e) => {
+//   e.preventDefault();
+//   page = page + 1;
+//   onSearch();
+// }));
 
 gallery.addEventListener('click', ((e) => {
-  console.log(e.target.src)
   if (e.target.className === 'photo') {
     basicLightbox.create(`
     <div class="modal">
