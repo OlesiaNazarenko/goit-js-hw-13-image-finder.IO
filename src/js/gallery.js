@@ -37,7 +37,7 @@ function resetPage() {
 function incrementPage() {
         page = page+1;
 }
-function onsearchImage(query, page, perPage) {
+
     
 function onsearchImage(query, page, perPage) {
   loadMoreBtn.classList.remove('is-hidden');
@@ -49,19 +49,18 @@ function onsearchImage(query, page, perPage) {
         loadMoreBtn.classList.remove('is-hidden');
         info({ text: 'There are no more images. Please, try another request ' })
         return;
-        }
+      }
       else {
         renderGalleryCard(array);
         loadMoreBtn.classList.add('is-hidden');
-        observer.observe(loadMoreBtn)    
+        observer.observe(loadMoreBtn)
       }
       
-      }).catch((error) => {
-        alert({ text: 'Something went wrong.Please try again' })
-        console.log(error.message)
-      })
+    }).catch((err) => {
+      error({ text: 'Something went wrong.Please try again' })
+    })
   }
-   }
+}
 
 const options = {
       root: null,
@@ -79,7 +78,7 @@ const observer = new IntersectionObserver(infiniteScroll,options )
     }
 
   }
-  }
+  
 
 
 
@@ -93,4 +92,4 @@ form.addEventListener('submit', ((e) => { e.preventDefault(); resetPage(); clear
         <img src="${e.target.src}" alt="" class="modal-photo" />
       </div>`).show()
     }
-  }))
+  }));
