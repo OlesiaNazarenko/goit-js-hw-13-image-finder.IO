@@ -1,6 +1,7 @@
 import refs from './refs'
-import fetchImage from './apiService'
-import galleryCards from '../templates/galleryCards.hbs'
+import ApiService from './apiService'
+import RenderGallery from './renderGallery'
+import getObserver from './intersectionObserver'
 import * as basicLightbox from 'basiclightbox'
 
 
@@ -12,84 +13,60 @@ defaults.delay = '3000'
 defaults.width = '400px'
 defaults.minHeight = '56px'
 
+const api = new ApiService(12)
+const renderGallery = new RenderGallery()
 
-const { form, input, gallery, loadMoreBtn} = refs;
-
-let page = 1
-const perPage = 12
-
-function renderGalleryCard(array) {
-    const markup = galleryCards(array);
-    gallery.insertAdjacentHTML('beforeend', markup);
-}
-function clearContainer() {
-  gallery.innerHTML = '';
-   loadMoreBtn.classList.remove('is-hidden');
-}
 function onSearch() {
-    const searchQuery = input.value;
-    onsearchImage(searchQuery, page, perPage)
-   }
-
-function resetPage() {
-        page = 1;
-}
-function incrementPage() {
-        page = page+1;
-}
-
-    
-function onsearchImage(query, page, perPage) {
-  loadMoreBtn.classList.remove('is-hidden');
+  const query = renderGallery.refs.input.value
   if (query.length === 0 || query.length < 2) {
     alert({ text: 'Enter a search word and try again' })
   } else {
-    fetchImage(query, page, perPage).then(array => {
-      if (array.length == 0) {
-        loadMoreBtn.classList.remove('is-hidden');
-        info({ text: 'There are no more images. Please, try another request ' })
-        return;
-      }
-      else {
-        renderGalleryCard(array);
-        loadMoreBtn.classList.add('is-hidden');
-        observer.observe(loadMoreBtn)
-      }
-      
-    }).catch((err) => {
-      error({ text: 'Something went wrong.Please try again' })
-    })
+     api.query = query;
+     api.resetPage();
+     onsearchImage()
   }
+   }
+
+function loadMoreImage() {
+  onsearchImage()
+}
+const observer = getObserver(observerCb);
+
+function onsearchImage() {
+  api.getImage().then((gallery) => {
+    renderGallery.renderGalleryCard(gallery);
+    
+  }).then(() => {
+    observer.observe(renderGallery.refs.gallery.lastElementChild)
+  })
+    .catch((err) => {
+      if (err.status === 408) {
+        info({ text: err.message })
+      }
+      if (err.status === 404) {
+        error({ text: err.message })
+      }
+  })
+}
+function observerCb() {
+      api.incrementPage()
+      observer.unobserve(renderGallery.refs.gallery.lastElementChild)
+      loadMoreImage()
 }
 
-const options = {
-      root: null,
-      rootMargin: '0px'
-   }
-const observer = new IntersectionObserver(infiniteScroll,options )
-
-  function infiniteScroll(entries, observer) {
-    if (!entries.isIntersecting) {
-      incrementPage()
-      onSearch()
-    } else {
-      observer.unobserve(loadMoreBtn);
-      return alert({ text: 'There are no more images for your request' })
-    }
-
-  }
-  
-
-
-
-
-form.addEventListener('submit', ((e) => { e.preventDefault(); resetPage(); clearContainer(); onSearch() }));
-
-  gallery.addEventListener('click', ((e) => {
+function handleSubmit(e) {
+  e.preventDefault();
+  renderGallery.clearContainer();
+  onSearch()
+}
+  function openModal(e) {
     if (e.target.className === 'photo') {
       basicLightbox.create(`
-    <div class="modal">
-        <img src="${e.target.src}" alt="" class="modal-photo" />
+      <div class="modal">
+      <img src="${e.target.src}" alt="" class="modal-photo" />
       </div>`).show()
     }
-  }));
+  }
+
+renderGallery.refs.form.addEventListener('submit',  handleSubmit);
+renderGallery.refs.gallery.addEventListener('click', openModal);
